@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HS1.0</title>
+  <title>HS1.1</title>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -24,6 +24,7 @@
       width: 100%;
       border: 2px solid #ccc;
       border-radius: 8px;
+      background: #fff;
     }
   </style>
 </head>
@@ -31,11 +32,11 @@
 
   <h2>HTML File Previewer</h2>
   <div class="controls">
-    <input type="file" id="fileInput" accept=".html" />
+    <input type="file" id="fileInput" accept=".html,.htm" />
   </div>
 
-  <!-- Sandboxed iframe to safely render uploaded code -->
-  <iframe id="previewFrame" sandbox="allow-scripts"></iframe>
+  <!-- srcdoc=" " prevents the iframe from making server requests before a file is chosen -->
+  <iframe id="previewFrame" srcdoc="<p style='color:#888; padding:20px;'>Upload an HTML file above to view it here.</p>" sandbox="allow-scripts"></iframe>
 
   <script>
     const fileInput = document.getElementById('fileInput');
@@ -43,11 +44,12 @@
 
     fileInput.addEventListener('change', (event) => {
       const file = event.target.files[0];
-      if (file && file.type === "text/html") {
+      
+      // Check if file extension ends with .html or .htm
+      if (file && file.name.toLowerCase().endsWith('.html') || file.name.toLowerCase().endsWith('.htm')) {
         const reader = new FileReader();
         
         reader.onload = (e) => {
-          // Render the user's uploaded HTML into the iframe
           iframe.srcdoc = e.target.result;
         };
         
